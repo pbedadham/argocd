@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-app-v2
+  namespace: argocd
+spec:
+  destination:
+    namespace: ns1
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: helm/grafana/
+    repoURL: https://github.com/pbedadham/argocd.git
+    targetRevision: HEAD
+    helm:
+      version: v3
+      valueFiles:
+        - values.yaml
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
