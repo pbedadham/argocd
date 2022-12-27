@@ -1,2 +1,4 @@
 image:
   tag: 9.1.4
+service:
+  type: nodePort
