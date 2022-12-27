@@ -1,4 +1,5 @@
-image:
-  tag: 9.1.4
-service:
-  type: nodePort
+grafana:
+  image:
+    tag: 9.1.4
+  service:
+    type: nodePort
