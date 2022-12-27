@@ -9,6 +9,11 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
+    helm:
+      version: v3
+      valueFiles:
+        - values.yaml
+        - values-image.yaml
     path: helm/grafana/
     repoURL: https://github.com/pbedadham/argocd.git
     targetRevision: HEAD
