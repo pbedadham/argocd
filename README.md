@@ -3,7 +3,7 @@
 **Table of Contents**
 
 - [Introduction](#introduction)
-- [Local Kubernetes Cluster - Minikube](#kubernetes-cluster---minikube)
+- [Kubernetes Cluster - Minikube](#kubernetes-cluster---minikube)
 - [Git Repository Hierarchy](#git-repository-hierarchy)
 - [Intall Argo CD Using Helm](#intall-argo-cd-using-helm)
 - [Grafana App in Dev and Prod namespaces](#grafana-application-in-dev-and-prod-namespaces)
