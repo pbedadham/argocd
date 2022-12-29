@@ -2,7 +2,6 @@
 
 **Table of Contents**
 
-- [Argo CD](#argo-cd)
 - [Introduction](#introduction)
 - [Local Kubernetes Cluster - Minikube](#local-kubernetes-cluster---minikube)
 - [Git Repository Hierarchy](#git-repository-hierarchy)
