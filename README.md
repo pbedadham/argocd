@@ -52,7 +52,9 @@ argocd
 ```
 
 # Intall Argo CD Using Helm
+```
 git clone https://github.com/pbedadham/argocd.git
+```
 
 Go to argocd directory.
 ```
