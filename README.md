@@ -33,7 +33,7 @@ kube-system   storage-provisioner                1/1     Running   0          36
 ```
 
 # Git Repository Hierarchy
-Folder structure below is used in this project. You are free to change it.
+Folder structure below is used in this project. 
 ```
 argocd
 ├── argocd-install           # ArgoCD installation
