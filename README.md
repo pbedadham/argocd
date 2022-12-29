@@ -3,7 +3,7 @@
 **Table of Contents**
 
 - [Introduction](#introduction)
-- [Local Kubernetes Cluster - Minikube](#local-kubernetes-cluster---minikube)
+- [Local Kubernetes Cluster - Minikube](#kubernetes-cluster---minikube)
 - [Git Repository Hierarchy](#git-repository-hierarchy)
 - [Intall Argo CD Using Helm](#intall-argo-cd-using-helm)
 - [Grafana App in Dev and Prod namespaces](#grafana-application-in-dev-and-prod-namespaces)
@@ -14,7 +14,7 @@ Argo CD is a continuous delivery tool that uses Git as the source of truth for d
 
 In addition to using Git as a source of truth, Argo CD also has a number of other features that make it a useful tool for deploying applications. For example, it has built-in support for rolling updates and canary releases, as well as the ability to automate the promotion of applications between environments. It also integrates with a number of popular cloud-native tools, such as Kubernetes and Helm, and can be used to deploy applications to a variety of environments, including on-premises and cloud-based infrastructure
 
-# Local Kubernetes Cluster - Minikube
+# Kubernetes Cluster - Minikube
 Install minikube - Follow this documentation - https://minikube.sigs.k8s.io/docs/start/
 ```
 kubectl get nodes
