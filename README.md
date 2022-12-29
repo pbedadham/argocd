@@ -47,8 +47,8 @@ argocd
 │       ├── values-prod.yaml # Production values
 │       └── values.yaml      # common values
 └── argocd-apps              # ArgoCD Application's yaml files
-    └── grafana-dev-app.yaml
-    └── grafana-prod-app.yaml
+    └── grafana-dev.yaml
+    └── grafana-prod.yaml
 ```
 
 # Intall Argo CD Using Helm
