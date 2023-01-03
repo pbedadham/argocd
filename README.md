@@ -1,104 +1,53 @@
-# Argo CD
+# Best Practices
 
 **Table of Contents**
 
 - [Introduction](#introduction)
-- [Kubernetes Cluster - Minikube](#kubernetes-cluster---minikube)
-- [Git Repository Hierarchy](#git-repository-hierarchy)
-- [Intall Argo CD Using Helm](#intall-argo-cd-using-helm)
-- [Grafana App in Dev and Prod namespaces](#grafana-application-in-dev-and-prod-namespaces)
-- [Reference](#reference)
+- [Single Repo Per Project](#use-a-single-git-repository-per-project)
+- [Multiple environments](#use-argocd-to-deploy-your-application-to-multiple-environments)
+- [Environment-specific configuration](#create-an-environment-specific-configuration-for-each-environment)
+- [Helm charts](#use-helm-charts-with-argocd)
+- [Avoid sync policy in production](#avoid-using-argocd’s-sync-policy-in-production)
+- [Rollouts instead of sync policy](#use-argo-rollouts-instead-of-argocd’s-sync-policy)
+
 
 # Introduction
-Argo CD is a continuous delivery tool that uses Git as the source of truth for deploying applications. It follows the GitOps model, which means that all of the desired application configurations and manifests are stored in Git, and Argo CD synchronizes the desired state with the current state of the applications in the target environments. This allows you to easily track changes to your application configurations and roll back to previous versions if needed.
+Here are some best practices for large scale and production deployments:
 
-In addition to using Git as a source of truth, Argo CD also has a number of other features that make it a useful tool for deploying applications. For example, it has built-in support for rolling updates and canary releases, as well as the ability to automate the promotion of applications between environments. It also integrates with a number of popular cloud-native tools, such as Kubernetes and Helm, and can be used to deploy applications to a variety of environments, including on-premises and cloud-based infrastructure
 
-# Kubernetes Cluster - Minikube
-Install minikube - Follow this documentation - https://minikube.sigs.k8s.io/docs/start/
-```
-kubectl get nodes
-NAME       STATUS   ROLES           AGE   VERSION
-minikube   Ready    control-plane   49s   v1.25.3
+# Use a single Git repository per project
+When you have multiple Git repositories for a single project, it can be difficult to keep track of which changes need to be deployed to which environment. This can lead to confusion and errors when trying to deploy your code.
 
-kubectl get pods -A
-NAMESPACE     NAME                               READY   STATUS    RESTARTS   AGE
-kube-system   coredns-565d847f94-4hwkl           1/1     Running   0          25s
-kube-system   etcd-minikube                      1/1     Running   0          37s
-kube-system   kube-apiserver-minikube            1/1     Running   0          39s
-kube-system   kube-controller-manager-minikube   1/1     Running   0          39s
-kube-system   kube-proxy-clwgq                   1/1     Running   0          25s
-kube-system   kube-scheduler-minikube            1/1     Running   0          38s
-kube-system   storage-provisioner                1/1     Running   0          36s
-```
+By using a single Git repository per project, you can easily track which changes need to be deployed to which environment. This will make your life much easier when it comes time to deploy your code.
 
-# Git Repository Hierarchy
-Folder structure below is used in this project. 
-```
-argocd
-├── argocd-install           # ArgoCD installation
-│   └── argo-cd              # ArgoCD helm chart
-│       ├── Chart.yaml
-│       └── values.yaml
-├── helm-apps                # ArgoCD Application's yaml files
-│   └── grafana              # Grafana helm chart
-│       ├── Chart.yaml
-│       ├── values-dev.yaml  # Dev values
-│       ├── values-prod.yaml # Production values
-│       └── values.yaml      # common values
-└── argocd-apps              # ArgoCD Application's yaml files
-    └── grafana-dev.yaml
-    └── grafana-prod.yaml
-```
+# Use ArgoCD to deploy your application to multiple environments
+When you’re developing an application, it’s important to have a development, staging, and production environment. This allows you to test your code in a safe environment before it goes live.
 
-# Intall Argo CD Using Helm
-```
-git clone https://github.com/pbedadham/argocd.git
-```
+ArgoCD makes it easy to deploy your code to multiple environments. Simply create a new Git branch for each environment, and ArgoCD will automatically deploy your code to that environment.
 
-Go to argocd directory.
-```
-cd argocd/argocd-install/
-```
+This is a great way to ensure that your code works in all environments, and it also makes it easy to rollback changes if something goes wrong.
 
-Install ArgoCD in the namespace *argocd* with custom values file.
-```
-helm install argocd argo-cd \
-    -n argocd --create-namespace \
-    -f argo-cd/values.yaml
-```
+# Create an environment-specific configuration for each environment
+When you have a single, shared configuration file for all environments, it’s very easy to accidentally make a change that gets deployed to production when you meant to deploy it to staging. This can cause major problems, and is easily avoided by using a separate configuration file for each environment.
 
-Get initial admin password.
-```
-kubectl -n argocd get secrets argocd-initial-admin-secret \
-    -o jsonpath='{.data.password}' | base64 -d
-```
+It’s also a good idea to use ArgoCD’s “promote” command to promote changes from one environment to the next, rather than making changes directly in the target environment. This way, you can test changes in lower environments before they get deployed to production.
 
-Forward argocd-server service port 80 to localhost:8080 using kubectl.
-```
-kubectl -n argocd port-forward service/argocd-server 8080:80
-```
 
-Browse http://localhost:8080 and login with initial admin password.
+# Use Helm charts with ArgoCD
+Helm charts are a great way to package and deploy applications, and they work well with ArgoCD. ArgoCD can deploy Helm charts from any Git repository, and it will automatically generate the necessary manifests for the chart.
 
-# Grafana Application in Dev and Prod namespaces
+This is a great way to get started with ArgoCD, and it can save you a lot of time when deploying applications.
 
-Deploy grafana-dev and grafana-prod yaml files in the argocd-apps directory. This illustrates managing dev and prod environments separately.  
-```
-kubectl apply -f argocd-apps/grafana-dev.yaml
-application.argoproj.io/grafana-dev-app created
+# Avoid using ArgoCD’s sync policy in production
+The sync policy is a powerful feature that allows you to automatically sync your local changes with the remote cluster. However, this feature is not meant to be used in production, as it can lead to data loss and other unexpected side effects.
 
-kubectl get po -n dev
-NAME                              READY   STATUS    RESTARTS   AGE
-grafana-dev-app-d877df495-9gg4s   1/1     Running   0          12s
-```
+If you need to use the sync policy in production, make sure to understand the risks involved and take appropriate precautions, such as making regular backups of your data.
 
-```
-kubectl apply -f argocd-apps/grafana-prod.yaml
-application.argoproj.io/grafana-prod-app created
+# Use Argo Rollouts instead of ArgoCD’s sync policy
+ArgoCD’s sync policy is very powerful, but it can also be very dangerous. The sync policy allows you to specify that ArgoCD should automatically sync your changes to the server, without any manual intervention. This is great for making sure that your changes are always up-to-date, but it can also lead to problems if you make a mistake in your configuration.
 
-kubectl get po -n prod
-NAME                               READY   STATUS    RESTARTS   AGE
-grafana-prod-app-d66bb8868-llwvp   1/1     Running   0          16s
-```
-# Reference
+For example, suppose you accidentally delete a critical file from your repository. If you have the sync policy enabled, ArgoCD will automatically delete the file from the server, without any warning. This can obviously lead to serious problems.
+
+The Argo Rollouts feature is designed to prevent this type of problem. With Argo Rollouts, you can specify that ArgoCD should create a new rollout whenever you make a change to your configuration. This gives you a chance to review the changes before they are applied to the server, and it also allows you to roll back changes if something goes wrong.
+
+Overall, we believe that the Argo Rollouts feature is a much safer way to use ArgoCD, and we recommend that you use it instead of the sync policy.
